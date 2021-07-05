@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://kit.fontawesome.com/897cdecd56.js"></script>
+    <style>
+        
+        .card-title{
+            color: lightskyblue;
+            font-weight: bolder;
+        }
+        
+        .card-text{
+            text-align: left;
+            font-weight: bold;
+        }
+        .card-body{
+            background-color: rgb(47, 47, 82);
+            color: lightslategrey;
+            border:cornflowerblue ;
+            
+        }
+        .card-header{
+            
+            background-color: rgb(84, 84, 133);
+            border: cornflowerblue;
+            font-weight: bold;
+        font-family:Verdana, Geneva, Tahoma, sans-serif;
+        }
+        .card-footer{
+            
+            background-color: rgb(123, 123, 192);
+            border: cornflowerblue;
+            color: black;
+        }
+      
+    </style>
+    
+    
+    
+    </head>
+
+
+
+
+<body style="background-color:cornflowerblue">
+    <div class="container" >
+    <div class="row mt-5">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <input type="text" name="" id="city" placeholder="Enter cityname" style="margin-bottom: 20px;background-color:rgb(42, 101, 211) ;color: rgb(22, 22, 46);">
+            <button onclick="fetchCountry()" style="background-color: rgb(44, 7, 145);">
+                <i class="far fa-question-circle" ></i>Fetch City</button>
+        </div>
+        <div class="col-4"></div>
+    </div>
+    <div class="row" >
+        <div class="col-4"></div>
+        <div class="col-4" id="result"  onclick="displayValues()"></div>
+        <div class="col-4"></div>        
+
+    </div>
+
+</div>
+</body>
+<script>
+    function displayValues(city){
+        let city_name=city.list[0].name
+        let temp=city.list[0].main.temp
+        let temp_min=city.list[0].main.temp_min
+        let temp_max=city.list[0].main.temp_max
+        let temp_feel=city.list[0].main.feels_like
+        let clouds=city.list[0].clouds.all
+        let wind=city.list[0].wind.speed
+      // let rains=city.list[0].weather[1].id
+        let country=city.list[0].sys.country
+        //let timezones=city.list[0].timezone
+      //  console.log(city.list[0].);
+
+    
+        let html_data=`<div class="card text-center">
+  <div class="card-header" ><i class="fas fa-cloud">&nbsp &nbsp</i><i class="far fa-sun"></i>&nbsp &nbsp
+    Weather in your city&nbsp &nbsp<i class="fas fa-cloud-rain">&nbsp &nbsp</i><i class="fas fa-bolt"></i>
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">${city_name} Weather Report</h5>
+    <p class="card-text">Temperature : &nbsp &nbsp${temp} </p>
+    <p class="card-text">Temperature Range :&nbsp &nbsp<i class="fas fa-arrow-up"> ${temp_max}</i> <i class="fas fa-arrow-down"> ${temp_min}</i></p>
+    <p class="card-text">Feels Like : &nbsp &nbsp ${temp_feel}</p>
+
+    <p class="card-text"> <i class="fas fa-cloud-sun">:</i>&nbsp &nbsp${clouds}%</p>
+    <p class="card-text">Wind Speed:&nbsp &nbsp ${wind}m/s</p>
+  
+    
+  </div>
+  <div class="card-footer">
+   ${country}__${city_name}
+  </div>
+</div>`
+document.querySelector("#result").innerHTML=html_data
+
+    }
+
+   /* function fetchCountry(){
+        let country_name=country.value
+        let url=`https://restcountries.eu/rest/v2/name/${country_name}?fullText=true`
+        let request=new XMLHttpRequest()
+        request.open("get",url)
+        request.send()
+        request.onreadystatechange=()=>{
+            if(request.readyState==4){
+                if(request.status>199 & request.status<300){
+                    let data=JSON.parse(request.responseText)
+                    console.log(data);
+                    displayValues(data)
+                }
+                else{
+                    console.log("failed");
+                }
+            }
+        }
+    } */
+
+    function fetchCountry(){
+        let city_name=city.value;
+        let api_key="4410bed15de79f2af06c0e54f800d789"
+        let url=`http://api.openweathermap.org/data/2.5/find?q=${city_name}&units=metric&appid=${api_key}`
+        fetch(url).then(res=>{
+            if(!(res.ok)){
+              throw new Error("failed to fetch data")
+            }
+            else{
+                return res.json()
+            }
+        }).then(data=>displayValues(data)).catch(error=>alert(error.message))
+
+    }
+</script>
+</html>
